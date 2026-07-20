@@ -6,11 +6,11 @@ import { Plane, DoorOpen, ArrowRight, MapPin } from "lucide-react";
 // TEMPORARY frontend-only airline-icon color per airline name, since there's
 // no logo/branding field from the backend. Falls back to a plain teal plane
 // icon for any airline not listed here.
-const airlineAccent: Record<string, string> = {
-  "Air India": "text-red-600",
-  IndiGo: "text-blue-700",
-  SpiceJet: "text-red-500",
-};
+// const airlineAccent: Record<string, string> = {
+//   "Air India": "text-red-600",
+//   IndiGo: "text-blue-700",
+//   SpiceJet: "text-red-500",
+// };
 
 export function GateChangePage() {
   const { data, isLoading, isError } = useFlights({ limit: 50 });
