@@ -1,23 +1,23 @@
 import { useMutation } from "@tanstack/react-query";
 import { apiClient } from "../../../lib/apiClient";
-import type { FeedbackReference } from "../../../types";
+import type { Citation } from "../../../types";
 
-// NOTE: /admin/chatbot/query is not in your current backend's endpoint list —
-// the README says the old RAG/chatbot code was removed. You'll need to add
-// this endpoint back (Manager/Staff-authenticated) before this page will work.
 interface ChatbotResponse {
   answer: string;
-  references: FeedbackReference[];
-  insufficientInfo: boolean;
+  citations: Citation[];
+}
+
+interface ChatbotEnvelope {
+  data: ChatbotResponse;
 }
 
 export function useAskChatbot() {
   return useMutation({
-    mutationFn: async (question: string) => {
-      const res = await apiClient.post<ChatbotResponse>("/admin/chatbot/query", {
-        question,
+    mutationFn: async (message: string) => {
+      const res = await apiClient.post<ChatbotEnvelope>("/chatbot/query", {
+        message,
       });
-      return res.data;
+      return res.data.data;
     },
   });
 }

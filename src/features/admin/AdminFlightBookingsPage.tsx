@@ -1,6 +1,7 @@
 import { useParams } from "react-router-dom";
 import { useFlightBookings } from "./api/useAdminFlights";
 import { LoadingState, ErrorState, EmptyState } from "../../components/QueryState";
+import { Ticket, Mail, Armchair, CheckCircle2, XCircle, Plane } from "lucide-react";
 
 export function AdminFlightBookingsPage() {
   const { flightId } = useParams();
@@ -8,30 +9,101 @@ export function AdminFlightBookingsPage() {
   const bookings = data?.data;
 
   return (
-    <div className="mx-auto w-full max-w-2xl px-4 py-8">
-      <h1 className="mb-6 text-2xl font-semibold text-slate-900">Flight bookings</h1>
+    <div className="relative min-h-screen overflow-hidden bg-slate-900 px-4 py-10">
+      {/* Decorative dashed flight-path trail, top-right, purely visual */}
+      <div className="pointer-events-none absolute right-0 top-8 hidden w-[420px] text-teal-700/50 lg:block">
+        <svg viewBox="0 0 420 60" fill="none" className="w-full">
+          <path
+            d="M0 15 C 150 15, 200 55, 420 45"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeDasharray="6 8"
+          />
+        </svg>
+        <Plane size={22} className="absolute bottom-0 right-2 rotate-[20deg]" />
+      </div>
 
-      {isLoading && <LoadingState label="Loading bookings…" />}
-      {isError && <ErrorState label="Couldn't load bookings for this flight." />}
-      {!isLoading && !isError && bookings?.length === 0 && (
-        <EmptyState label="No bookings for this flight yet." />
-      )}
+      <div className="relative mx-auto w-full max-w-2xl">
+        {/* Header: icon badge + title + subtitle */}
+        <div className="mb-8 flex items-center gap-4">
+          <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-teal-600">
+            <Ticket size={26} className="text-white" />
+          </div>
+          <div>
+            <h1 className="text-3xl font-bold text-white">Flight bookings</h1>
+            <div className="mt-1 h-1 w-25 rounded-full bg-teal-500" />
+            <p className="mt-2 text-slate-400">
+              View and manage all bookings for the selected flight.
+            </p>
+          </div>
+        </div>
 
-      {!isLoading && !isError && bookings && bookings.length > 0 && (
-        <ul className="flex flex-col gap-2">
-          {bookings.map((booking) => (
-            <li
-              key={booking.id}
-              className="flex items-center justify-between rounded-md border border-slate-200 px-4 py-3 text-sm"
-            >
-              <span>Seat {booking.seatNumber}</span>
-              <span className="text-xs uppercase tracking-wide text-slate-400">
-                {booking.status}
-              </span>
-            </li>
-          ))}
-        </ul>
-      )}
+        {isLoading && <LoadingState label="Loading bookings…" />}
+        {isError && <ErrorState label="Couldn't load bookings for this flight." />}
+        {!isLoading && !isError && bookings?.length === 0 && (
+          <EmptyState label="No bookings for this flight yet." />
+        )}
+
+        {!isLoading && !isError && bookings && bookings.length > 0 && (
+          <ul className="flex flex-col gap-4">
+            {bookings.map((booking) => {
+              const isConfirmed = booking.status === "CONFIRMED";
+              const initials = booking.passenger.name
+                .split(" ")
+                .map((n) => n[0])
+                .join("")
+                .slice(0, 2)
+                .toUpperCase();
+
+              return (
+                <li
+                  key={booking.id}
+                  className={
+                    "flex items-center justify-between gap-4 rounded-2xl border-l-4 bg-white p-5 shadow-lg " +
+                    (isConfirmed ? "border-teal-500" : "border-red-500")
+                  }
+                >
+                  <div className="flex items-center gap-4">
+                    <div
+                      className={
+                        "flex h-12 w-12 shrink-0 items-center justify-center rounded-full text-base font-bold " +
+                        (isConfirmed ? "bg-teal-50 text-teal-700" : "bg-red-50 text-red-600")
+                      }
+                    >
+                      {initials}
+                    </div>
+                    <div>
+                      <p className="font-bold text-slate-900">{booking.passenger.name}</p>
+                      <p className="flex items-center gap-1.5 text-sm text-slate-500">
+                        <Mail size={14} className="text-teal-600" />
+                        {booking.passenger.email}
+                      </p>
+                      <p className="flex items-center gap-1.5 text-sm text-slate-500">
+                        <Armchair size={14} className="text-teal-600" />
+                        Seat {booking.seatNumber}
+                      </p>
+                    </div>
+                  </div>
+
+                  <span
+                    className={
+                      "flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-bold uppercase tracking-wide " +
+                      (isConfirmed
+                        ? "bg-teal-50 text-teal-700"
+                        : "bg-red-50 text-red-600")
+                    }
+                  >
+                    {isConfirmed ? <CheckCircle2 size={14} /> : <XCircle size={14} />}
+                    {booking.status}
+                  </span>
+                </li>
+              );
+            })}
+          </ul>
+        )}
+
+        {/* Footer line, matching the reference */}
+      </div>
     </div>
   );
 }

@@ -18,8 +18,8 @@ export interface Flight {
   departureTime: string; // ISO date string
   arrivalTime: string; // ISO date string
   gate: string | null;
-  seatsAvailable: number;
-  seatsTotal: number;
+  availableSeats: number;
+  totalSeats: number;
 }
 
 export type BookingStatus = "CONFIRMED" | "CANCELLED";
@@ -35,24 +35,34 @@ export interface Booking {
 
 export interface Paginated<T> {
   data: T[];
-  page: number;
-  limit: number;
-  total: number;
-  totalPages: number;
+  pagination: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+  };
 }
 
-export interface FeedbackReference {
-  feedbackId: string;
+export interface FlightBooking extends Booking {
+  passenger: {
+    id: string;
+    name: string;
+    email: string;
+  };
+}
+
+export interface Citation {
   flightNumber: string;
-  travelDate: string;
-  rating: number;
+  origin: string;
+  destination: string;
   category: string;
+  rating: number;
+  snippet: string;
 }
 
 export interface ChatMessage {
   id: string;
   role: "user" | "assistant";
   content: string;
-  references?: FeedbackReference[];
-  insufficientInfo?: boolean;
+  citations?: Citation[];
 }

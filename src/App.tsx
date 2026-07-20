@@ -4,12 +4,15 @@ import { ProtectedRoute } from "./routes/ProtectedRoute";
 import { RoleGatedRoute } from "./routes/RoleGatedRoute";
 
 import { LoginPage } from "./features/auth/LoginPage";
+import { AdminLoginPage } from "./features/auth/AdminLoginPage";
 import { RegisterPage } from "./features/auth/RegisterPage";
 import { ProfilePage } from "./features/auth/ProfilePage";
 import { FlightSearchPage } from "./features/flights/FlightSearchPage";
 import { FlightDetailsPage } from "./features/flights/FlightDetailsPage";
 import { MyBookingsPage } from "./features/bookings/MyBookingsPage";
-import { AdminDashboardPage } from "./features/admin/AdminDashboardPage";
+// import { DashboardPage } from "./features/admin/DashboardPage";
+import { FlightsPage } from "./features/admin/FlightsPage";
+import { GateChangePage } from "./features/admin/GateChangePage";
 import { AdminFlightBookingsPage } from "./features/admin/AdminFlightBookingsPage";
 import { ChatbotPage } from "./features/chatbot/ChatbotPage";
 import { HomePage } from "./features/home/HomePage";
@@ -22,6 +25,7 @@ export default function App() {
       <Routes>
         {/* public */}
         <Route path="/login" element={<LoginPage />} />
+        <Route path="/admin/login" element={<AdminLoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/" element={<HomePage />} />
         <Route path="/search" element={<FlightSearchPage />} />
@@ -40,12 +44,12 @@ export default function App() {
         {/* manager only */}
         <Route element={<RoleGatedRoute allowedRoles={["MANAGER"]} />}>
           <Route path="/admin/chatbot" element={<ChatbotPage />} />
+          <Route path="/admin/gate-change" element={<GateChangePage />} />
         </Route>
-
 
         {/* airline admin (manager or staff) */}
         <Route element={<RoleGatedRoute allowedRoles={["MANAGER", "STAFF"]} />}>
-          <Route path="/admin" element={<AdminDashboardPage />} />
+          <Route path="/admin/flights" element={<FlightsPage />} />
           <Route path="/admin/flights/:flightId/bookings" element={<AdminFlightBookingsPage />} />
         </Route>
 

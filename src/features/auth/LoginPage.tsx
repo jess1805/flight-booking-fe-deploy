@@ -1,10 +1,10 @@
-import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { AxiosError } from "axios";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import { useLoginAdmin, useLoginPassenger } from "./api/useAuthMutations";
+import { Link, useNavigate } from "react-router-dom";
+import { useLoginPassenger } from "./api/useAuthMutations";
+import { PasswordInput } from "../../components/PasswordInput";
 
 const loginSchema = z.object({
   email: z.string().min(1, "Email is required").email("Enter a valid email"),
@@ -13,14 +13,16 @@ const loginSchema = z.object({
 
 type LoginForm = z.infer<typeof loginSchema>;
 
+const fieldClass =
+  "w-full h-11 rounded-xl border border-teal-200 bg-teal-50 px-4 text-slate-900 " +
+  "transition focus:border-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-200";
+
+const fieldLabelClass = "mb-2 block text-sm font-semibold text-slate-700";
+const fieldErrorClass = "mt-1 text-sm text-red-600";
+
 export function LoginPage() {
   const navigate = useNavigate();
-  // const location = useLocation();
-  const [audience, setAudience] = useState<"PASSENGER" | "ADMIN">("PASSENGER");
-
-  const loginAdmin = useLoginAdmin();
   const loginPassenger = useLoginPassenger();
-  const activeMutation = audience === "ADMIN" ? loginAdmin : loginPassenger;
 
   const {
     register,
@@ -29,103 +31,90 @@ export function LoginPage() {
   } = useForm<LoginForm>({ resolver: zodResolver(loginSchema) });
 
   async function onSubmit(data: LoginForm) {
-    await activeMutation.mutateAsync(data);
-    if (audience === "PASSENGER") {
-        navigate("/profile", { replace: true });    
-      } else {
-        navigate("/admin", { replace: true });
-      }
+    await loginPassenger.mutateAsync(data);
+    navigate("/profile", { replace: true });
   }
 
-  const errorMessage =
-  activeMutation.isError
+  const errorMessage = loginPassenger.isError
     ? (
-        activeMutation.error as AxiosError<{
+        loginPassenger.error as AxiosError<{
           error?: { message?: string };
         }>
       ).response?.data?.error?.message ?? "Unable to log in. Please try again."
     : "";
 
   return (
-    <div className="mx-auto flex min-h-[80vh] w-full max-w-sm flex-col justify-center px-4">
-      <h1 className="mb-4 text-2xl font-semibold text-slate-900">Log in</h1>
+    <div className="flex min-h-screen flex-col items-center justify-start gap-10 bg-slate-900 px-4 pt-20">
+      <div className="w-full max-w-md rounded-3xl bg-white p-8 shadow-[0_20px_60px_rgba(0,0,0,0.35)] border border-slate-200">
+        <h1 className="text-center text-3xl font-bold text-slate-900">
+          Log in
+        </h1>
+        {/* Teal accent underline below the "Log in" heading — centered to match
+            the centered heading above it. Adjust w-16 to make the line wider/narrower. */}
+        <div className="mx-auto mb-6 mt-2 h-1 w-20 rounded-full bg-teal-500" />
 
-      {/* audience tabs — admin and passenger use separate login endpoints */}
-      <div className="mb-6 flex rounded-md border border-slate-300 p-1 text-sm">
-        <button
-          type="button"
-          onClick={() => setAudience("PASSENGER")}
-          className={
-            "flex-1 rounded px-3 py-1.5 " +
-            (audience === "PASSENGER" ? "bg-slate-900 text-white" : "text-slate-600")
-          }
-        >
-          Passenger
-        </button>
-        <button
-          type="button"
-          onClick={() => setAudience("ADMIN")}
-          className={
-            "flex-1 rounded px-3 py-1.5 " +
-            (audience === "ADMIN" ? "bg-slate-900 text-white" : "text-slate-600")
-          }
-        >
-          Airline staff
-        </button>
+        <form onSubmit={handleSubmit(onSubmit)} noValidate className="flex flex-col gap-5">
+          <div>
+            <label htmlFor="email" className={fieldLabelClass}>
+              Email
+            </label>
+
+            <input
+              id="email"
+              type="email"
+              autoComplete="email"
+              {...register("email")}
+              className={fieldClass}
+            />
+
+            {errors.email && (
+              <p className={fieldErrorClass}>{errors.email.message}</p>
+            )}
+          </div>
+
+          <div>
+            <label htmlFor="password" className={fieldLabelClass}>
+              Password
+            </label>
+
+            {/* Same fieldClass as email above — PasswordInput adds pr-10
+                internally to make room for the eye icon, so this box will
+                match the email box exactly in width, height, and colors. */}
+            <PasswordInput
+              id="password"
+              autoComplete="current-password"
+              {...register("password")}
+              className={fieldClass}
+            />
+
+            {errors.password && (
+              <p className={fieldErrorClass}>{errors.password.message}</p>
+            )}
+          </div>
+
+          {loginPassenger.isError && (
+            <p className="text-sm text-red-600">{errorMessage}</p>
+          )}
+
+          <button
+            type="submit"
+            disabled={loginPassenger.isPending}
+            className="mt-2 rounded-xl bg-teal-600 py-3 font-semibold text-white transition duration-200 hover:bg-teal-700 disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            {loginPassenger.isPending ? "Logging in..." : "Log in"}
+          </button>
+        </form>
+
+        <p className="mt-6 text-center text-slate-700">
+          Do not have an account?{" "}
+          <Link
+            to="/register"
+            className="font-semibold text-teal-700 underline transition hover:text-teal-800"
+          >
+            Register
+          </Link>
+        </p>
       </div>
-
-      <form onSubmit={handleSubmit(onSubmit)} noValidate className="flex flex-col gap-4">
-        <div>
-          <label htmlFor="email" className="mb-1 block text-sm font-medium text-slate-700">
-            Email
-          </label>
-          <input
-            id="email"
-            type="email"
-            autoComplete="email"
-            {...register("email")}
-            className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-slate-500 focus:outline-none focus:ring-1 focus:ring-slate-500"
-          />
-          {errors.email && <p className="mt-1 text-sm text-red-600">{errors.email.message}</p>}
-        </div>
-
-        <div>
-          <label htmlFor="password" className="mb-1 block text-sm font-medium text-slate-700">
-            Password
-          </label>
-          <input
-            id="password"
-            type="password"
-            autoComplete="current-password"
-            {...register("password")}
-            className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-slate-500 focus:outline-none focus:ring-1 focus:ring-slate-500"
-          />
-          {errors.password && (
-            <p className="mt-1 text-sm text-red-600">{errors.password.message}</p>
-          )}
-        </div>
-
-        {activeMutation.isError && (
-          <p className="text-sm text-red-600">
-            {errorMessage}
-          </p>
-          )}
-
-        <button
-          type="submit"
-          disabled={activeMutation.isPending}
-          className="mt-2 rounded-md bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-700 disabled:opacity-50"
-        >
-          {activeMutation.isPending ? "Logging in…" : "Log in"}
-        </button>
-      </form>
-
-      <p className="mt-4 text-sm text-slate-600">
-        No account?{" "}
-        <Link to="/register" className="font-medium text-slate-900 underline">
-          Register
-        </Link>
-      </p>
     </div>
   );
 }

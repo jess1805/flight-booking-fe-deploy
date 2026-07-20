@@ -17,21 +17,6 @@ export function useLoginPassenger() {
   });
 }
 
-export function useRegisterAdmin() {
-  const { registerAdmin } = useAuth();
-  return useMutation({
-    mutationFn: ({
-      email,
-      password,
-      role,
-    }: {
-      email: string;
-      password: string;
-      role: "MANAGER" | "STAFF";
-    }) => registerAdmin(email, password, role),
-  });
-}
-
 export function useRegisterPassenger() {
   const { registerPassenger } = useAuth();
   return useMutation({

@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { apiClient } from "../../../lib/apiClient";
-import type { Booking, Flight, Paginated } from "../../../types";
+import type { Flight, FlightBooking, Paginated } from "../../../types";
 
 interface FlightResponse {
   data: Flight;
@@ -29,7 +29,7 @@ export function useFlightBookings(flightId: string | undefined) {
   return useQuery({
     queryKey: ["admin", "flight-bookings", flightId],
     queryFn: async () => {
-      const res = await apiClient.get<Paginated<Booking>>(`/flights/${flightId}/bookings`);
+      const res = await apiClient.get<Paginated<FlightBooking>>(`/flights/${flightId}/bookings`);
       return res.data;
     },
     enabled: !!flightId,

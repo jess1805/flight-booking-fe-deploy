@@ -7,7 +7,6 @@ interface AuthContextValue {
   isLoading: boolean;
   loginAdmin: (email: string, password: string) => Promise<void>;
   loginPassenger: (email: string, password: string) => Promise<void>;
-  registerAdmin: (email: string, password: string, role: "MANAGER" | "STAFF") => Promise<void>;
   registerPassenger: (name: string, email: string, password: string) => Promise<void>;
   logout: () => void;
 }
@@ -29,10 +28,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [isLoading, setIsLoading] = useState(true);
 
   async function fetchProfile(audience: "ADMIN" | "PASSENGER") {
-    const path = audience === "ADMIN" ? "/admin/profile" : "/passengers/profile";
-    const res = await apiClient.get<ProfileResponse>(path);
-    setUser(res.data.data);
-  }
+  const path = audience === "ADMIN" ? "/admin/profile" : "/passengers/profile";
+  const res = await apiClient.get<ProfileResponse>(path);
+  setUser({ ...res.data.data, role: audience === "PASSENGER" ? "PASSENGER" : res.data.data.role });
+}
 
   // Restore session on load if a token is already stored.
   useEffect(() => {
@@ -60,12 +59,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     await fetchProfile("PASSENGER");
   }
 
-  async function registerAdmin(email: string, password: string, role: "MANAGER" | "STAFF") {
-    const res = await apiClient.post<AuthResponse>("/admin/register", { email, password, role });
-    setAuthSession(res.data.data.token, "ADMIN");
-    await fetchProfile("ADMIN");
-  }
-
   async function registerPassenger(name: string, email: string, password: string) {
     const res = await apiClient.post<AuthResponse>("/passengers/register", {
       name,
@@ -83,7 +76,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   return (
     <AuthContext.Provider
-      value={{ user, isLoading, loginAdmin, loginPassenger, registerAdmin, registerPassenger, logout }}
+      value={{ user, isLoading, loginAdmin, loginPassenger, registerPassenger, logout }}
     >
       {children}
     </AuthContext.Provider>
