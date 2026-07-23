@@ -2,9 +2,9 @@ import { useState } from "react";
 import { useAskChatbot } from "./api/useChatbot";
 import type { ChatMessage } from "../../types";
 import { MessageCircle, Plane, Send } from "lucide-react";
+import { TwoToneHeading } from "../../components/TwoToneHeading";
 
-// The backend is instructed to answer in plain text, but LLM output can still
-// slip in **bold** markers — render them as <strong> instead of literal asterisks.
+// bold markdown -> strong
 function renderMarkdownBold(text: string) {
   const parts = text.split(/\*\*(.+?)\*\*/g);
   return parts.map((part, i) => (i % 2 === 1 ? <strong key={i}>{part}</strong> : part));
@@ -46,23 +46,21 @@ export function ChatbotPage() {
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-slate-900 px-4 py-10">
-      <div className="relative mx-auto flex h-[85vh] w-full max-w-2xl flex-col">
-        {/* Header: icon badge + title + subtitle, matching the other admin pages */}
+      <div className="relative z-10 mx-auto flex h-[85vh] w-full max-w-2xl flex-col">
+        {/* header */}
         <div className="mb-8 flex items-center gap-4">
           <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-teal-600">
             <MessageCircle size={26} className="text-white" />
           </div>
           <div>
-            <h1 className="text-3xl font-bold text-white">Feedback assistant</h1>
-            <div className="mt-1 h-1 w-16 rounded-full bg-teal-500" />
+            <TwoToneHeading first="Feedback" second="assistant" className="text-3xl font-bold" />
             <p className="mt-2 text-slate-400">
               Ask about customer feedback — by flight, route, category, or rating.
             </p>
           </div>
         </div>
 
-        {/* One white card holds both the scrollable message list and the input row,
-            like the content cards on GateChangePage/FlightsPage but split top/bottom. */}
+        {/* message list + input */}
         <div className="flex flex-1 flex-col overflow-hidden rounded-2xl bg-white shadow-lg">
           <div className="flex-1 space-y-4 overflow-y-auto p-4">
             {messages.length === 0 && (
@@ -155,7 +153,7 @@ export function ChatbotPage() {
           </div>
         </div>
 
-        {/* Footer line, matching the reference */}
+        {/* footer line */}
         <div className="mt-6 flex items-center justify-center gap-2 text-teal-500">
           <Plane size={16} />
           <span className="text-sm">Ask anything about what passengers are telling us.</span>

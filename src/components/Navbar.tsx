@@ -10,14 +10,9 @@ import {
   primaryButtonClass,
 } from "../styles/sharedStyles";
 
-// Logo font — a distinct, slightly geometric/rounded sans-serif so the
-// "SkyRoute" logo text stands out from the plain nav link text next to it.
-// These are common system fonts (no external font file is downloaded), so
-// it looks good everywhere without adding a new dependency. Swap this list
-// for a real Google Font later if you want an exact custom look.
 const logoFontFamily = "'Poppins', 'Avenir Next', 'Century Gothic', Futura, ui-rounded, sans-serif";
 
-// A small plane icon shown next to the logo text.
+// logo icon
 function PlaneIcon() {
   return (
     <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" className="text-teal-600">
@@ -26,8 +21,7 @@ function PlaneIcon() {
   );
 }
 
-// A small down/up arrow shown on dropdown trigger buttons (Profile).
-// It rotates 180deg when the dropdown is open.
+// dropdown chevron
 function ChevronIcon({ open }: { open: boolean }) {
   return (
     <svg
@@ -46,7 +40,7 @@ function ChevronIcon({ open }: { open: boolean }) {
   );
 }
 
-// A small "exit" icon shown next to the Logout button.
+// logout icon
 function LogoutIcon() {
   return (
     <svg
@@ -66,13 +60,10 @@ function LogoutIcon() {
   );
 }
 
-// Classes for a single nav link. Every nav link looks the same regardless
-// of which page is currently open — no "active page" highlight.
 const navLinkClass =
-  "rounded-md px-2.5 py-1.5 text-sm font-medium text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-900";
+  "rounded-md px-2.5 py-1.5 text-sm font-medium text-slate-600 transition-colors hover:bg-teal-50 hover:text-teal-700";
 
-// A "Label ▾" button that opens a small menu of links underneath it on
-// hover. Used for the "Profile" menu (passenger navbar).
+// profile dropdown
 function NavDropdown({
   label,
   links,
@@ -84,8 +75,6 @@ function NavDropdown({
 }) {
   const [open, setOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
-  // Holds the pending "close" timer so we can cancel it if the mouse comes
-  // back before it fires (see closeAfterDelay below).
   const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   function openNow() {
@@ -94,15 +83,10 @@ function NavDropdown({
   }
 
   function closeAfterDelay() {
-    // Wait a moment before closing. Without this, moving the mouse from
-    // the trigger button down into the panel below it (across the small
-    // gap between them) could register as "leaving" and close the menu
-    // before the user reaches it.
     closeTimer.current = setTimeout(() => setOpen(false), 150);
   }
 
-  // Close the dropdown if the user clicks anywhere outside of it (covers
-  // the case where it was opened by clicking/tapping instead of hovering).
+  // click outside closes
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
@@ -118,16 +102,11 @@ function NavDropdown({
 
   return (
     <div className="relative" ref={dropdownRef} onMouseEnter={openNow} onMouseLeave={closeAfterDelay}>
-      {/* onClick is a fallback for keyboard/touch users, who can't "hover" */}
       <button onClick={() => setOpen((o) => !o)} className={navLinkClass + " flex items-center gap-1"}>
         {label}
         <ChevronIcon open={open} />
       </button>
 
-      {/* The menu is always in the DOM (not conditionally rendered) so that
-          opening/closing it can fade and scale smoothly instead of popping
-          in instantly. "pointer-events-none" stops it from being clickable
-          while it's invisible. */}
       <div
         className={
           dropdownPanelClass + " " + (open ? "scale-100 opacity-100" : "pointer-events-none scale-95 opacity-0")
@@ -148,7 +127,7 @@ function NavDropdown({
   );
 }
 
-// The three-line "hamburger" button that opens the mobile menu.
+// mobile menu button
 function MobileMenuButton({ onClick }: { onClick: () => void }) {
   return (
     <button
@@ -171,24 +150,15 @@ export function Navbar() {
 
   function handleLogout() {
     logout();
-    // Delaying the redirect by a tick avoids a race with the route guards
-    // (ProtectedRoute/RoleGatedRoute), which would otherwise send the user
-    // to /login instead of / when logging out from a protected page.
     setTimeout(() => navigate("/", { replace: true }), 0);
   }
 
-  const navBarWrapperClass = "border-b border-slate-200 bg-white/95 backdrop-blur";
+  const navBarWrapperClass = "relative z-50 border-b border-slate-200 bg-white/95 backdrop-blur";
 
-  // Left padding on the navbar — keeps the logo from sitting flush against
-  // the browser's left edge.
-  const navBarLeftPadding = "pl-6";
-  // Right padding on the navbar — keeps the nav links / Login button from
-  // sitting flush against the browser's right edge.
-  const navBarRightPadding = "pr-6";
-  const navBarInnerClass = `mx-auto flex max-w-3xl items-center justify-between ${navBarLeftPadding} ${navBarRightPadding} py-3`;
+  const navBarLeftPadding = "pl-8";
+  const navBarRightPadding = "pr-8";
+  const navBarInnerClass = `flex items-center justify-between ${navBarLeftPadding} ${navBarRightPadding} py-3`;
 
-  // Spacing between individual nav links (Home, Search Flights, etc.) —
-  // increase/decrease this to make them feel more or less spread out.
   const navLinkGap = "gap-6";
   const navLinksRowClass = `hidden items-center ${navLinkGap} sm:flex`;
 
@@ -260,6 +230,9 @@ export function Navbar() {
             <Link to="/search" className={navLinkClass}>
               Search Flights
             </Link>
+            <Link to="/feedback" className={navLinkClass}>
+              Feedback
+            </Link>
 
             <NavDropdown label="Profile" links={profileDropdownLinks} currentPath={location.pathname} />
 
@@ -283,6 +256,13 @@ export function Navbar() {
               className={navLinkClass}
             >
               Search Flights
+            </Link>
+            <Link
+              to="/feedback"
+              onClick={() => setMenuOpen(false)}
+              className={navLinkClass}
+            >
+              Feedback
             </Link>
             {profileDropdownLinks.map((link) => (
               <Link

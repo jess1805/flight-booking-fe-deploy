@@ -1,17 +1,14 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowRight, MapPin, Calendar, DoorOpen } from "lucide-react";
+import { ArrowRight, MapPin, Calendar, DoorOpen, Search } from "lucide-react";
 import { useFlights } from "./api/useFlights";
 import { LoadingState, ErrorState, EmptyState } from "../../components/QueryState";
+import { TwoToneHeading } from "../../components/TwoToneHeading";
 
-// Same teal-tinted field style used on the login/register inputs, so the
-// search boxes on this page look consistent with the rest of the app.
 const fieldClass =
   "w-full h-11 rounded-xl border border-teal-200 bg-teal-50 pl-10 pr-3 text-sm text-slate-900 " +
   "transition placeholder:text-slate-400 focus:border-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-200";
 
-// Wraps an input with a small icon on the left (origin pin, destination
-// pin, calendar) — purely decorative, doesn't affect the input's value.
 function FieldWithIcon({
   icon,
   children,
@@ -46,12 +43,15 @@ export function FlightSearchPage() {
   const flights = data?.data;
 
   return (
-    // Dark navy background for the whole page, matching the auth pages.
     <div className="min-h-screen bg-slate-900 px-4 py-10">
-      <div className="mx-auto w-full max-w-3xl">
-        <h1 className="text-2xl font-semibold text-white">Search flights</h1>
-        {/* Teal accent underline below the heading, same treatment as the auth pages */}
-        <div className="mb-6 mt-2 h-1 w-38 rounded-full bg-teal-500" />
+      <div className="relative z-10 mx-auto w-full max-w-3xl">
+        {/* header */}
+        <div className="mb-8 flex items-center gap-4">
+          <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-teal-600">
+            <Search size={26} className="text-white" />
+          </div>
+          <TwoToneHeading first="Search" second="flights" className="text-3xl font-bold" />
+        </div>
 
         <div className="mb-8 grid grid-cols-1 gap-3 sm:grid-cols-3">
           <FieldWithIcon icon={<MapPin size={16} />}>
@@ -105,11 +105,16 @@ export function FlightSearchPage() {
                       <p className="text-sm font-medium text-teal-600">
                         {flight.flightNumber}
                       </p>
+                      <p className="text-xs text-slate-400">
+                        {new Date(flight.departureTime).toLocaleDateString([], {
+                          weekday: "short",
+                          day: "numeric",
+                          month: "short",
+                        })}
+                      </p>
                     </div>
 
-                    {/* Origin -> destination, styled like the reference image:
-                        big code in a light teal pill, connecting line with a
-                        plane icon in the middle. */}
+                    {/* origin -> destination */}
                     <div className="flex flex-1 items-center justify-center gap-4">
                       <span className="rounded-lg bg-teal-50 px-4 py-2 text-xl font-bold text-teal-700">
                         {flight.origin}
@@ -126,8 +131,7 @@ export function FlightSearchPage() {
                       </span>
                     </div>
 
-                    {/* Gate + View Details, replacing price/seats from the
-                        original design. */}
+                    {/* gate + view details */}
                     <div className="flex shrink-0 items-center gap-4 sm:flex-col sm:items-end sm:gap-3">
                       {flight.gate && (
                         <div className="flex items-center gap-1.5 text-slate-700">

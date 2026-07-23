@@ -11,11 +11,13 @@ export function FlightsPage() {
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-slate-900 px-4 py-10">
-      <div className="relative mx-auto w-full max-w-3xl">
-        {/* Header */}
-        <div className="mb-8">
+      <div className="relative z-10 mx-auto w-full max-w-3xl">
+        {/* header */}
+        <div className="mb-8 flex items-center gap-4">
+          <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-teal-600">
+            <Plane size={26} className="text-white" />
+          </div>
           <h1 className="text-3xl font-bold text-white">Flights</h1>
-          <div className="mt-1 h-1 w-16 rounded-full bg-teal-500" />
         </div>
 
         {isLoading && <LoadingState label="Loading flights…" />}
@@ -37,6 +39,13 @@ export function FlightsPage() {
                       {flight.airline}
                     </p>
                     <p className="text-sm text-teal-600">{flight.flightNumber}</p>
+                    <p className="text-xs text-slate-400">
+                      {new Date(flight.departureTime).toLocaleDateString([], {
+                        weekday: "short",
+                        day: "numeric",
+                        month: "short",
+                      })}
+                    </p>
                   </div>
 
                   <div className="flex flex-1 items-center gap-3 sm:mx-6">
@@ -99,7 +108,7 @@ export function FlightsPage() {
           </>
         )}
 
-        {/* Footer line, matching the reference */}
+        {/* footer line */}
         <div className="mt-10 flex items-center justify-center gap-2 text-teal-500">
           <Plane size={16} />
           <span className="text-sm">Browse all flights and manage their bookings.</span>

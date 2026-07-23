@@ -1,5 +1,6 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 import { Navbar } from "./components/Navbar";
+import { BackgroundDecoration } from "./components/BackgroundDecoration";
 import { ProtectedRoute } from "./routes/ProtectedRoute";
 import { RoleGatedRoute } from "./routes/RoleGatedRoute";
 
@@ -16,10 +17,12 @@ import { GateChangePage } from "./features/admin/GateChangePage";
 import { AdminFlightBookingsPage } from "./features/admin/AdminFlightBookingsPage";
 import { ChatbotPage } from "./features/chatbot/ChatbotPage";
 import { HomePage } from "./features/home/HomePage";
+import { FeedbackPage } from "./features/feedback/FeedbackPage";
 
 export default function App() {
   return (
     <div className="min-h-screen bg-white">
+      <BackgroundDecoration />
       <Navbar />
 
       <Routes>
@@ -39,6 +42,7 @@ export default function App() {
         {/* passenger only */}
         <Route element={<RoleGatedRoute allowedRoles={["PASSENGER"]} />}>
           <Route path="/bookings" element={<MyBookingsPage />} />
+          <Route path="/feedback" element={<FeedbackPage />} />
         </Route>
 
         {/* manager only */}

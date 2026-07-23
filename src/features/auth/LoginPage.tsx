@@ -45,13 +45,10 @@ export function LoginPage() {
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-start gap-10 bg-slate-900 px-4 pt-20">
-      <div className="w-full max-w-md rounded-3xl bg-white p-8 shadow-[0_20px_60px_rgba(0,0,0,0.35)] border border-slate-200">
-        <h1 className="text-center text-3xl font-bold text-slate-900">
+      <div className="relative z-10 w-full max-w-md rounded-3xl bg-white p-8 shadow-[0_20px_60px_rgba(0,0,0,0.35)] border border-slate-200">
+        <h1 className="mb-6 text-center text-3xl font-bold text-slate-900">
           Log in
         </h1>
-        {/* Teal accent underline below the "Log in" heading — centered to match
-            the centered heading above it. Adjust w-16 to make the line wider/narrower. */}
-        <div className="mx-auto mb-6 mt-2 h-1 w-20 rounded-full bg-teal-500" />
 
         <form onSubmit={handleSubmit(onSubmit)} noValidate className="flex flex-col gap-5">
           <div>
@@ -77,9 +74,6 @@ export function LoginPage() {
               Password
             </label>
 
-            {/* Same fieldClass as email above — PasswordInput adds pr-10
-                internally to make room for the eye icon, so this box will
-                match the email box exactly in width, height, and colors. */}
             <PasswordInput
               id="password"
               autoComplete="current-password"

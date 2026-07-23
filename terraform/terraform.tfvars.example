@@ -1,0 +1,5 @@
+# All variables have working defaults for this deployment (see variables.tf).
+# Copy to terraform.tfvars only if you need to override something, e.g. if
+# the backend ALB is ever recreated with a new DNS name.
+
+# alb_origin_domain = "flight-booking-alb-337360694.us-east-1.elb.amazonaws.com"

@@ -10,7 +10,7 @@ export function ProtectedRoute() {
   }
 
   if (!user) {
-    // send them to login, remembering where they were headed
+    // redirect to login
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 

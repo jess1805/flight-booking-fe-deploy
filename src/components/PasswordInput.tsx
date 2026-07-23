@@ -2,10 +2,6 @@ import { forwardRef, useState, type InputHTMLAttributes } from "react";
 import { twMerge } from "tailwind-merge";
 import { inputClass } from "../styles/sharedStyles";
 
-// A normal text input, but with an eye icon that toggles the password
-// between hidden ("•••••") and visible ("plain text"). Used anywhere a
-// password is entered (login, register, etc).
-
 function EyeIcon() {
   return (
     <svg
@@ -54,8 +50,6 @@ export const PasswordInput = forwardRef<HTMLInputElement, PasswordInputProps>(
           {...props}
           ref={ref}
           type={visible ? "text" : "password"}
-          // twMerge ensures any conflicting classes in `className` (e.g. bg-*, w-*, rounded-*)
-          // correctly override the shared inputClass defaults, instead of silently losing to them
           className={twMerge(inputClass, className, "pr-10")}
         />
         <button

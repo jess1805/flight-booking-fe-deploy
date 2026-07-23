@@ -7,15 +7,9 @@ import {
   primaryButtonLargeClass,
 } from "../../styles/sharedStyles";
 
-// Placeholder hero photo (airplane wing above clouds) from Unsplash — a
-// free stock photo source. Swap this URL for your own image whenever
-// you're ready; nothing else needs to change.
 const heroImageUrl =
   "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?auto=format&fit=crop&w=1200&q=80";
 
-// Photos for the static "Dining, Shopping & Lounges" section below — all
-// free-to-use Unsplash stock photos. Purely illustrative (no links), so
-// swapping these URLs is the only thing needed to change the pictures.
 const diningShoppingLounges = [
   {
     label: "Restaurants & Cafés",
@@ -39,15 +33,7 @@ const diningShoppingLounges = [
   },
 ];
 
-// --- Icon setup ---
-// Every card icon below (Terminal Maps, Check-in, etc.) is built on top of
-// this one wrapper, so they all share the exact same size and stroke
-// width instead of each icon picking its own.
-
-// Size (width/height, in pixels) used for every card icon.
 const cardIconSize = 22;
-// Stroke width used for every card icon — keeping this the same number
-// everywhere is what makes the icons feel like one consistent set.
 const cardIconStrokeWidth = 1.75;
 
 function CardIcon({ children }: { children: ReactNode }) {
@@ -96,10 +82,6 @@ function BaggageIcon() {
   );
 }
 
-// The arrow shown on the right edge of every card. Same stroke width as
-// the icons above (cardIconStrokeWidth) for a consistent look, but a
-// touch smaller since it's a secondary/decorative element, not the main
-// icon for the card.
 function ArrowRightIcon() {
   return (
     <svg
@@ -118,21 +100,14 @@ function ArrowRightIcon() {
   );
 }
 
-// --- Card data ---
-
 const airportInfo = [
   { label: "Terminal Maps", icon: <TerminalMapIcon /> },
   { label: "Check-in Information", icon: <CheckInIcon /> },
   { label: "Baggage Services", icon: <BaggageIcon /> },
 ];
 
-// --- Card styling ---
-// Text color used in the card's default (non-hover) state — near-black,
-// so it reads as "black text" on the light teal background.
 const cardDefaultTextClass = "text-slate-900";
 
-// The full set of classes for one Airport Information tile: layout + the
-// shared teal/green color pair from sharedStyles.ts.
 const serviceCardClass =
   `flex cursor-pointer items-center justify-between gap-3 rounded-xl px-5 py-4 shadow-sm ` +
   `transition-all duration-200 ${cardTint} ${cardDefaultTextClass} ${cardHoverClass}`;
@@ -154,7 +129,7 @@ export function HomePage() {
     <main className="min-h-screen">
       {/* Hero Section */}
       <section className="bg-slate-900 text-white py-24">
-        <div className="mx-auto grid max-w-6xl items-center gap-12 px-6 lg:grid-cols-2">
+        <div className="relative z-10 mx-auto grid max-w-6xl items-center gap-12 px-6 lg:grid-cols-2">
           <div>
             <h1 className="text-5xl font-bold">Welcome to {appName}</h1>
 
@@ -168,8 +143,6 @@ export function HomePage() {
             </Link>
           </div>
 
-          {/* Hidden on small screens so the hero stays text-only on mobile,
-              same as before. */}
           <div className="hidden lg:block">
             <img
               src={heroImageUrl}
@@ -180,19 +153,10 @@ export function HomePage() {
         </div>
       </section>
 
-      {/* Dining, Shopping & Lounges — purely informational, no links or
-          buttons. Light teal-tinted section background, so it's clearly a
-          different area of the page from the plain white above it and the
-          gray "Airport Information" section below it. */}
       <section className="bg-teal-50 py-16">
-        <div className="mx-auto max-w-6xl px-6">
-          {/* Heading size — bigger than a normal section heading so this
-              reads as the start of a new part of the page. */}
+        <div className="relative z-10 mx-auto max-w-6xl px-6">
           <h2 className="text-4xl font-extrabold text-slate-900">Dining, Shopping &amp; Lounges</h2>
 
-          {/* Thin teal underline bar under the heading — a small accent so
-              it doesn't look like plain bold text. Adjust the width/color
-              classes below to change it. */}
           <div className="mt-3 mb-8 h-1 w-16 rounded-full bg-teal-500" />
 
           <p className="mb-8 max-w-2xl text-slate-600">
@@ -218,11 +182,8 @@ export function HomePage() {
         </div>
       </section>
 
-      {/* Airport Information — darker gray background than the Dining,
-          Shopping & Lounges section above, but still much lighter than the
-          navy navbar/footer. */}
       <section className="bg-slate-200 py-16">
-        <div className="mx-auto max-w-6xl px-6">
+        <div className="relative z-10 mx-auto max-w-6xl px-6">
           <h2 className="text-4xl font-extrabold text-slate-900">
             Airport Information
           </h2>
@@ -238,7 +199,7 @@ export function HomePage() {
       </section>
 
       {/* Footer */}
-      <footer className="bg-slate-900 text-white py-8 text-center">
+      <footer className="relative z-10 bg-slate-900 text-white py-8 text-center">
         © 2026 {appName}. All Rights Reserved.
       </footer>
     </main>

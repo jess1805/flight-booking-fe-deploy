@@ -18,7 +18,7 @@ export function RoleGatedRoute({ allowedRoles }: RoleGatedRouteProps) {
   }
 
   if (!allowedRoles.includes(user.role)) {
-    // logged in, but the wrong role — send them somewhere sensible
+    // wrong role redirect
     return <Navigate to="/" replace />;
   }
 

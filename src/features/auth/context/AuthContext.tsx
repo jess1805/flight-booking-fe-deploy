@@ -33,7 +33,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   setUser({ ...res.data.data, role: audience === "PASSENGER" ? "PASSENGER" : res.data.data.role });
 }
 
-  // Restore session on load if a token is already stored.
+  // restore session
   useEffect(() => {
     const audience = getAuthAudience();
     const token = localStorage.getItem("auth_token");

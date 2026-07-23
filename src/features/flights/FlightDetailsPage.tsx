@@ -5,7 +5,7 @@ import { useCreateBooking } from "../bookings/api/useBookings";
 import { useAuth } from "../auth/context/AuthContext";
 import { AxiosError } from "axios";
 import { LoadingState, ErrorState } from "../../components/QueryState";
-import { Plane, MapPin, DoorClosed, Ticket, Lock, ArrowRight } from "lucide-react";
+import { Plane, DoorClosed, Ticket, Lock, ArrowRight } from "lucide-react";
 
 export function FlightDetailsPage() {
   const { flightId } = useParams();
@@ -39,12 +39,11 @@ export function FlightDetailsPage() {
   const durationMins = Math.floor((durationMs / (1000 * 60)) % 60);
 
   return (
-    // Dark page background, matching the rest of the app (search, bookings).
     <div className="min-h-screen bg-slate-900 px-4 py-10">
-      <div className="mx-auto w-full max-w-3xl">
-        {/* Teal header banner: logo placeholder, airline name, route summary */}
+      <div className="relative z-10 mx-auto w-full max-w-3xl">
+        {/* header banner */}
         <div className="relative overflow-hidden rounded-t-3xl bg-gradient-to-r from-teal-700 to-teal-600 p-8">
-          {/* Decorative plane icon in the corner — purely visual */}
+          {/* decorative icon */}
           <Plane
             size={90}
             className="absolute -right-2 -top-4 rotate-[30deg] text-teal-500/40"
@@ -57,22 +56,11 @@ export function FlightDetailsPage() {
               <h1 className="text-2xl font-bold text-white">
                 {flight.airline} · {flight.flightNumber}
               </h1>
-              <p className="mt-1 flex items-center gap-1.5 text-teal-50">
-                <MapPin size={15} />
-                {flight.origin} → {flight.destination}
-                {flight.gate && (
-                  <>
-                    <span className="mx-1">·</span>
-                    <DoorClosed size={15} />
-                    Gate {flight.gate}
-                  </>
-                )}
-              </p>
             </div>
           </div>
         </div>
 
-        {/* White card: flight number / gate chips, timing row, convenience-fee row */}
+        {/* info card */}
         <div className="rounded-b-3xl bg-white p-8 shadow-lg">
           <div className="mb-6 flex flex-wrap items-center gap-3">
             <div className="flex items-center gap-2 rounded-lg bg-teal-50 px-4 py-2 text-teal-700">
@@ -98,6 +86,9 @@ export function FlightDetailsPage() {
               <p className="text-3xl font-bold text-slate-900">
                 {departTime.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
               </p>
+              <p className="text-sm font-bold text-slate-700">
+                {departTime.toLocaleDateString([], { weekday: "short", day: "numeric", month: "short" })}
+              </p>
             </div>
 
             <div className="flex flex-1 flex-col items-center gap-1">
@@ -119,6 +110,9 @@ export function FlightDetailsPage() {
               <p className="text-3xl font-bold text-slate-900">
                 {arriveTime.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
               </p>
+              <p className="text-sm font-bold text-slate-700">
+                {arriveTime.toLocaleDateString([], { weekday: "short", day: "numeric", month: "short" })}
+              </p>
             </div>
           </div>
 
@@ -128,7 +122,7 @@ export function FlightDetailsPage() {
           </div>
         </div>
 
-        {/* Booking area / login prompt banner, spaced below the card */}
+        {/* booking area */}
         <div className="mt-4">
           {!user || user.role !== "PASSENGER" ? (
             <div className="flex flex-col items-start justify-between gap-4 rounded-2xl bg-teal-50 p-6 sm:flex-row sm:items-center">
@@ -161,6 +155,10 @@ export function FlightDetailsPage() {
                   <input
                     id="seat"
                     placeholder="e.g. 14A"
+                    // seat validation
+                    pattern="^(40|[1-9]|[12][0-9]|3[0-9])[A-Fa-f]$"
+                    title="Seat number must be between row 1–40, seat A–F (e.g. 14A)"
+                    maxLength={3}
                     value={seatNumber}
                     onChange={(e) => setSeatNumber(e.target.value.toUpperCase())}
                     className="w-full h-11 rounded-xl border border-teal-200 bg-teal-50 px-4 text-slate-900 transition focus:border-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-200"

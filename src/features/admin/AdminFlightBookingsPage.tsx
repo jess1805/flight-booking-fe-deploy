@@ -1,7 +1,8 @@
 import { useParams } from "react-router-dom";
 import { useFlightBookings } from "./api/useAdminFlights";
 import { LoadingState, ErrorState, EmptyState } from "../../components/QueryState";
-import { Ticket, Mail, Armchair, CheckCircle2, XCircle, Plane } from "lucide-react";
+import { Ticket, Mail, Armchair, CheckCircle2, XCircle } from "lucide-react";
+import { TwoToneHeading } from "../../components/TwoToneHeading";
 
 export function AdminFlightBookingsPage() {
   const { flightId } = useParams();
@@ -10,28 +11,14 @@ export function AdminFlightBookingsPage() {
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-slate-900 px-4 py-10">
-      {/* Decorative dashed flight-path trail, top-right, purely visual */}
-      <div className="pointer-events-none absolute right-0 top-8 hidden w-[420px] text-teal-700/50 lg:block">
-        <svg viewBox="0 0 420 60" fill="none" className="w-full">
-          <path
-            d="M0 15 C 150 15, 200 55, 420 45"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeDasharray="6 8"
-          />
-        </svg>
-        <Plane size={22} className="absolute bottom-0 right-2 rotate-[20deg]" />
-      </div>
-
-      <div className="relative mx-auto w-full max-w-2xl">
-        {/* Header: icon badge + title + subtitle */}
+      <div className="relative z-10 mx-auto w-full max-w-2xl">
+        {/* header */}
         <div className="mb-8 flex items-center gap-4">
           <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-teal-600">
             <Ticket size={26} className="text-white" />
           </div>
           <div>
-            <h1 className="text-3xl font-bold text-white">Flight bookings</h1>
-            <div className="mt-1 h-1 w-25 rounded-full bg-teal-500" />
+            <TwoToneHeading first="Flight" second="bookings" className="text-3xl font-bold" />
             <p className="mt-2 text-slate-400">
               View and manage all bookings for the selected flight.
             </p>
@@ -102,7 +89,7 @@ export function AdminFlightBookingsPage() {
           </ul>
         )}
 
-        {/* Footer line, matching the reference */}
+        {/* footer line */}
       </div>
     </div>
   );

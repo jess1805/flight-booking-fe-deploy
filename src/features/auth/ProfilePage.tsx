@@ -1,5 +1,6 @@
 import { useAuth } from "./context/AuthContext";
-import { Mail, ShieldCheck, LogOut, Heart, User, Plane } from "lucide-react";
+import { Mail, ShieldCheck, LogOut, Heart, User } from "lucide-react";
+import { TwoToneHeading } from "../../components/TwoToneHeading";
 
 export function ProfilePage() {
   const { user, logout } = useAuth();
@@ -8,22 +9,8 @@ export function ProfilePage() {
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-slate-900 px-4 py-10">
-      {/* Decorative dashed flight-path trail, top-right, purely visual */}
-      <div className="pointer-events-none absolute right-0 top-8 hidden w-[420px] text-teal-700/50 lg:block">
-        <svg viewBox="0 0 420 60" fill="none" className="w-full">
-          <path
-            d="M0 15 C 150 15, 200 55, 420 45"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeDasharray="6 8"
-          />
-        </svg>
-        <Plane size={22} className="absolute bottom-0 right-2 rotate-[20deg]" />
-      </div>
-
-      <div className="relative mx-auto w-full max-w-sm text-center">
-        <h1 className="text-3xl font-bold text-white">My Profile</h1>
-        <div className="mx-auto mt-1 h-1 w-16 rounded-full bg-teal-500" />
+      <div className="relative z-10 mx-auto w-full max-w-sm text-center">
+        <TwoToneHeading first="My" second="Profile" className="text-3xl font-bold" />
         <p className="mt-3 text-slate-400">Manage your account details and preferences</p>
 
         <div className="mt-8 rounded-3xl bg-white p-6 shadow-lg">

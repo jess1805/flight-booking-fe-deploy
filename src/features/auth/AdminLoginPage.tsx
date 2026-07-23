@@ -13,8 +13,6 @@ const loginSchema = z.object({
 
 type LoginForm = z.infer<typeof loginSchema>;
 
-// Same shared field styling as LoginPage.tsx and RegisterPage.tsx, so every
-// input across all three auth pages looks identical.
 const fieldClass =
   "w-full h-11 rounded-xl border border-teal-200 bg-teal-50 px-4 text-slate-900 " +
   "transition focus:border-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-200";
@@ -47,12 +45,10 @@ export function AdminLoginPage() {
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-start gap-10 bg-slate-900 px-4 pt-20">
-      <div className="w-full max-w-md rounded-3xl bg-white p-8 shadow-[0_20px_60px_rgba(0,0,0,0.35)] border border-slate-200">
-        <h1 className="text-center text-3xl font-bold text-slate-900">
+      <div className="relative z-10 w-full max-w-md rounded-3xl bg-white p-8 shadow-[0_20px_60px_rgba(0,0,0,0.35)] border border-slate-200">
+        <h1 className="mb-6 text-center text-3xl font-bold text-slate-900">
           Admin log in
         </h1>
-        {/* Teal accent underline, same treatment as LoginPage.tsx / RegisterPage.tsx */}
-        <div className="mx-auto mb-6 mt-2 h-1 w-40 rounded-full bg-teal-500" />
 
         <form onSubmit={handleSubmit(onSubmit)} noValidate className="flex flex-col gap-5">
           <div>

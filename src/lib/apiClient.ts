@@ -1,13 +1,10 @@
 import axios from "axios";
 
-// Backend base URL — adjust in .env if different
 export const apiClient = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL ?? "http://localhost:3000/api/v1",
 });
 
-// Dual auth: admin (Manager/Staff) and passenger use separate JWTs.
-// We only ever have one active session at a time in this app, so we
-// store which "audience" the current token belongs to alongside it.
+// admin vs passenger session
 export type AuthAudience = "ADMIN" | "PASSENGER";
 
 export function setAuthSession(token: string, audience: AuthAudience) {

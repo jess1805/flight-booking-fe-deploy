@@ -8,14 +8,19 @@ import { PasswordInput } from "../../components/PasswordInput";
 
 const passengerSchema = z.object({
   name: z.string().min(1, "Name is required"),
-  email: z.string().min(1, "Email is required").email("Enter a valid email"),
+  // gmail.com only
+  email: z
+    .string()
+    .min(1, "Email is required")
+    .email("Enter a valid email")
+    .refine((val) => /^[^\s@]+@gmail\.com$/i.test(val), {
+      message: "Email must be a @gmail.com address",
+    }),
   password: z.string().min(6, "Password must be at least 6 characters"),
 });
 
 type PassengerForm = z.infer<typeof passengerSchema>;
 
-// Same shared field styling as LoginPage.tsx, so every input across both
-// pages looks identical — same width, height, padding, border, colors.
 const fieldClass =
   "w-full h-11 rounded-xl border border-teal-200 bg-teal-50 px-4 text-slate-900 " +
   "transition focus:border-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-200";
@@ -37,8 +42,6 @@ export function RegisterPage() {
     navigate("/profile", { replace: true });
   }
 
-  // Show the real backend error message (e.g. "A passenger with this email
-  // already exists") instead of a generic one, same pattern as LoginPage.
   const errorMessage = registerPassenger.isError
     ? (
         registerPassenger.error as AxiosError<{
@@ -50,12 +53,10 @@ export function RegisterPage() {
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-start gap-10 bg-slate-900 px-4 pt-17">
-      <div className="w-full max-w-md rounded-3xl bg-white p-8 shadow-[0_20px_60px_rgba(0,0,0,0.35)] border border-slate-200">
-        <h1 className="text-center text-3xl font-bold text-slate-900">
+      <div className="relative z-10 w-full max-w-md rounded-3xl bg-white p-8 shadow-[0_20px_60px_rgba(0,0,0,0.35)] border border-slate-200">
+        <h1 className="mb-6 text-center text-3xl font-bold text-slate-900">
           Create an account
         </h1>
-        {/* Teal accent underline, same treatment as LoginPage.tsx */}
-        <div className="mx-auto mb-6 mt-2 h-1 w-60 rounded-full bg-teal-500" />
 
         <form onSubmit={handleSubmit(onSubmit)} noValidate className="flex flex-col gap-5">
           <div>

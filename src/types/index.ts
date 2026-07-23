@@ -6,9 +6,6 @@ export interface User {
   role: Role;
 }
 
-// NOTE: field names here (seatsAvailable/seatsTotal/gate/etc.) are assumed —
-// confirm against your actual Prisma Flight model / GET /flights response
-// and adjust if the real field names differ.
 export interface Flight {
   id: string;
   flightNumber: string;
