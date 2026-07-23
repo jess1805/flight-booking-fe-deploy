@@ -1,81 +1,288 @@
-# Airport Flight Management — Frontend
+# SkyRoute Frontend
 
-React + TypeScript frontend for the flight booking platform, matching the
-`Route → Controller → Service → Repository → Prisma → PostgreSQL` backend
-with dual Admin (Manager/Staff) and Passenger JWT auth.
+A modern React + TypeScript frontend for **SkyRoute**, a full-stack Flight Booking and Flight Management System. The application provides an intuitive interface for passengers to search and book flights while enabling airline administrators to manage flight operations through a secure role-based portal.
 
-## Setup
+The frontend communicates with the backend through REST APIs and supports separate authentication flows for passengers and administrators.
+
+---
+
+# Features
+
+## Public Features
+
+- Landing Page
+- Flight Search
+- Flight Details
+- Airport Services
+- Restaurants
+- Lounges
+- Shopping Information
+
+## Passenger Features
+
+- Passenger Registration
+- Passenger Login
+- Search Flights
+- View Flight Details
+- Book Flights
+- View Booking History
+- Profile Management
+- Submit Customer Feedback
+
+## Admin Features
+
+The application supports two administrator roles:
+
+### Manager
+
+- Flight Management
+- View Flight Bookings
+- Gate Change Management
+- AI-powered Feedback Chatbot
+
+### Staff
+
+- Flight Management
+- View Flight Bookings
+
+---
+
+# Technology Stack
+
+| Category | Technology |
+|-----------|------------|
+| Framework | React 19 + TypeScript |
+| Build Tool | Vite |
+| Routing | React Router |
+| State Management | React Context API |
+| Server State | TanStack Query |
+| Forms | React Hook Form |
+| Validation | Zod |
+| HTTP Client | Axios |
+| Styling | Tailwind CSS |
+| Icons | Lucide React |
+
+---
+
+# Authentication & Authorization
+
+The frontend supports two independent authentication systems:
+
+- Passenger Authentication
+- Admin Authentication (Manager / Staff)
+
+After a successful login, the backend generates a JWT token. The frontend stores the session and automatically includes the token with every protected API request.
+
+Role-Based Access Control (RBAC) ensures users can only access features permitted for their role.
+
+| Role | Access |
+|------|--------|
+| Passenger | Flight Booking, Profile, Bookings, Feedback |
+| Staff | Flight Management, Booking Management |
+| Manager | All Staff Features + Gate Management + AI Chatbot |
+
+---
+
+# Project Structure
+
+The frontend follows a **feature-based architecture**, where each feature owns its pages, API interactions, hooks, and components.
+
+```
+src/
+│
+├── components/
+│   ├── Shared reusable UI components
+│   ├── Navigation
+│   ├── Forms
+│   └── Common UI elements
+│
+├── features/
+│   ├── Home
+│   ├── Authentication
+│   ├── Flights
+│   ├── Bookings
+│   ├── Feedback
+│   ├── Chatbot
+│   └── Admin
+│
+├── context/
+│
+├── routes/
+│
+├── styles/
+│
+├── types/
+│
+├── utils/
+│
+├── App.tsx
+└── main.tsx
+```
+
+---
+
+# Routing
+
+## Public Routes
+
+- Home
+- Flight Search
+- Flight Details
+- Passenger Login
+- Passenger Registration
+- Admin Login
+
+## Protected Passenger Routes
+
+- Profile
+- My Bookings
+- Feedback
+
+## Protected Admin Routes
+
+- Flight Management
+- Flight Bookings
+- Gate Management
+- AI Chatbot (Manager only)
+
+Unauthorized users are automatically redirected based on their authentication status and role.
+
+---
+
+# API Communication
+
+The frontend communicates with the backend using REST APIs through Axios.
+
+TanStack Query is responsible for:
+
+- Data Fetching
+- Caching
+- Loading States
+- Error Handling
+- Automatic Data Refresh
+
+---
+
+# Form Validation
+
+Forms are built using React Hook Form together with Zod.
+
+Validation includes:
+
+- Required Fields
+- Email Validation
+- Password Validation
+- Flight Search Validation
+
+---
+
+# AI Feedback Chatbot
+
+Managers have access to an AI-powered chatbot that allows them to ask natural-language questions about customer feedback.
+
+The chatbot:
+
+- Sends queries to the backend
+- Displays AI-generated responses
+- Shows supporting citations
+- Is accessible only to Managers
+
+---
+
+# User Interface
+
+The application follows a modern airport-inspired design featuring:
+
+- Responsive Layout
+- Teal Theme
+- Glassmorphism Effects
+- Interactive Cards
+- Smooth Navigation
+- Mobile-Friendly Design
+
+---
+
+# Environment Variables
+
+Create a `.env` file in the project root.
+
+```env
+VITE_API_BASE_URL=http://localhost:3000/api/v1
+```
+
+---
+
+# Installation
+
+Clone the repository
+
+```bash
+git clone <repository-url>
+```
+
+Navigate to the project
+
+```bash
+cd frontend
+```
+
+Install dependencies
 
 ```bash
 npm install
-cp .env.example .env   # defaults to http://localhost:3000/api/v1
+```
+
+Copy the environment variables
+
+```bash
+cp .env.example .env
+```
+
+Start the development server
+
+```bash
 npm run dev
 ```
 
-## Stack
+---
 
-- Vite + React + TypeScript (`strict: true`, no `any`)
-- React Router: public routes (search, flight details), a plain **protected route**
-  (`/profile` — any authenticated user), and **role-gated routes** (`/bookings` for
-  Passengers only; `/admin/*` for Manager/Staff)
-- TanStack Query for all data fetching — loading/error/empty states handled on every page
-- React Hook Form + Zod: login, register (passenger + admin variants), gate updates
-- Tailwind CSS v4, mobile-first responsive layout
+# Production Build
 
-## Global state: Context API
+Build the application
 
-`features/auth/context/AuthContext.tsx` holds the current user + auth actions.
-Justification: state is small (current user only) and changes rarely (login/logout),
-so Context's re-render cost is negligible; everything else is server state owned by
-TanStack Query. See in-code comments for more detail.
+```bash
+npm run build
+```
 
-## Auth model (dual JWT)
+Preview the production build
 
-The backend has **two separate auth systems** — this frontend mirrors that:
+```bash
+npm run preview
+```
 
-- Admin: `POST /admin/login`, `POST /admin/register` (`{ email, password, role }`),
-  `GET /admin/profile` — role is `MANAGER` or `STAFF`
-- Passenger: `POST /passengers/login`, `POST /passengers/register`, `GET /passengers/profile`
-  — role is `PASSENGER`
+---
 
-Only one session is active at a time. `lib/apiClient.ts` stores the token plus which
-audience it belongs to (`auth_audience`), and `AuthContext` calls the matching
-`/profile` endpoint to restore the session and to fetch full user info after login.
+# Project Highlights
 
-**Assumption to verify**: login/register responses are assumed to return `{ token }`.
-Check your actual response shape and adjust `AuthResponse` in `AuthContext.tsx` if
-the field is named differently.
+- React + TypeScript
+- Feature-Based Architecture
+- JWT Authentication
+- Role-Based Access Control (RBAC)
+- REST API Integration
+- TanStack Query
+- React Hook Form + Zod
+- Responsive User Interface
+- AI-powered Feedback Chatbot
+- Tailwind CSS
 
-## Endpoints wired up
+---
 
-| Endpoint | Used in |
-|---|---|
-| `POST /admin/login`, `/admin/register`, `GET /admin/profile` | `features/auth` |
-| `POST /passengers/login`, `/passengers/register`, `GET /passengers/profile` | `features/auth` |
-| `GET /flights` (origin, destination, departureDate, page, limit) | `features/flights` |
-| `GET /flights/:id` | `features/flights` |
-| `PATCH /flights/:id/gate` (Manager only) | `features/admin` — `GateForm` |
-| `GET /flights/:id/bookings` (Manager/Staff) | `features/admin` |
-| `POST /bookings` (Passenger) | `features/flights` (booking action) |
-| `GET /bookings` (Passenger, paginated) | `features/bookings` |
-| `PATCH /bookings/:id/cancel` (Passenger) | `features/bookings` |
+# Future Enhancements
 
-## Known gaps to close on your side
-
-- **Flight model fields are assumed.** `types/index.ts` guesses at `seatsAvailable`,
-  `seatsTotal`, `gate` field names — confirm against your Prisma schema / actual
-  `GET /flights` response and adjust.
-- **No "create flight" endpoint exists** in the current API list, only gate updates —
-  the admin dashboard only lets Managers set a gate on existing (seeded) flights. If
-  you want flight creation from the UI, you'll need to add that backend endpoint.
-- **The chatbot has no backend endpoint yet** — the README you shared says the old
-  RAG/chatbot code was removed. `features/chatbot` calls `POST /admin/chatbot/query`
-  as a placeholder; it won't work until that route is rebuilt server-side.
-- Pagination on flight search UI (buttons) isn't wired up yet, only on My Bookings —
-  add if you expect more than one page of results in search.
-
-## Not yet done (optional requirements)
-
-- Chart.js visualizations
-- Theme toggle / formal accessibility (Lighthouse) pass
-- Vitest + React Testing Library tests
+- Online Payment Integration
+- Email Notifications
+- Flight Status Tracking
+- Seat Selection Improvements
+- Push Notifications
+- Multi-language Support
+- Analytics Dashboard
